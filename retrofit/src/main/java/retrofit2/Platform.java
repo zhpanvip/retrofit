@@ -113,7 +113,7 @@ class Platform {
             : MethodHandles.lookup();
     return lookup.unreflectSpecial(method, declaringClass).bindTo(object).invokeWithArguments(args);
   }
-
+  // 线程切换在这里
   static final class Android extends Platform {
     Android() {
       super(Build.VERSION.SDK_INT >= 24);

@@ -221,26 +221,26 @@ final class RequestFactory {
 
       return new RequestFactory(this);
     }
-
+    // 解析API Service方法注解上的信息
     private void parseMethodAnnotation(Annotation annotation) {
-      if (annotation instanceof DELETE) {
+      if (annotation instanceof DELETE) { // HTTP DELETE
         parseHttpMethodAndPath("DELETE", ((DELETE) annotation).value(), false);
-      } else if (annotation instanceof GET) {
+      } else if (annotation instanceof GET) { // HTTP GET
         parseHttpMethodAndPath("GET", ((GET) annotation).value(), false);
       } else if (annotation instanceof HEAD) {
         parseHttpMethodAndPath("HEAD", ((HEAD) annotation).value(), false);
       } else if (annotation instanceof PATCH) {
         parseHttpMethodAndPath("PATCH", ((PATCH) annotation).value(), true);
-      } else if (annotation instanceof POST) {
+      } else if (annotation instanceof POST) {// HTTP POST
         parseHttpMethodAndPath("POST", ((POST) annotation).value(), true);
-      } else if (annotation instanceof PUT) {
+      } else if (annotation instanceof PUT) {// HTTP PUT
         parseHttpMethodAndPath("PUT", ((PUT) annotation).value(), true);
       } else if (annotation instanceof OPTIONS) {
         parseHttpMethodAndPath("OPTIONS", ((OPTIONS) annotation).value(), false);
       } else if (annotation instanceof HTTP) {
         HTTP http = (HTTP) annotation;
         parseHttpMethodAndPath(http.method(), http.path(), http.hasBody());
-      } else if (annotation instanceof retrofit2.http.Headers) {
+      } else if (annotation instanceof retrofit2.http.Headers) { // 解析Header信息
         String[] headersToParse = ((retrofit2.http.Headers) annotation).value();
         if (headersToParse.length == 0) {
           throw methodError(method, "@Headers annotation is empty.");
@@ -273,7 +273,7 @@ final class RequestFactory {
       if (value.isEmpty()) {
         return;
       }
-
+      // 这里可能在URL中拼接了参数，将拼接的参数解析出来
       // Get the relative URL path and existing query string, if present.
       int question = value.indexOf('?');
       if (question != -1 && question < value.length() - 1) {

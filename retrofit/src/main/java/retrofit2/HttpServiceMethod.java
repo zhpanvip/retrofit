@@ -41,7 +41,7 @@ abstract class HttpServiceMethod<ResponseT, ReturnT> extends ServiceMethod<Retur
 
     Annotation[] annotations = method.getAnnotations();
     Type adapterType;
-    if (isKotlinSuspendFunction) {
+    if (isKotlinSuspendFunction) { // 对Kotlin协程的支持
       Type[] parameterTypes = method.getGenericParameterTypes();
       Type responseType =
           Utils.getParameterLowerBound(
@@ -60,11 +60,12 @@ abstract class HttpServiceMethod<ResponseT, ReturnT> extends ServiceMethod<Retur
       adapterType = new Utils.ParameterizedTypeImpl(null, Call.class, responseType);
       annotations = SkipCallbackExecutorImpl.ensurePresent(annotations);
     } else {
-      adapterType = method.getGenericReturnType();
+      adapterType = method.getGenericReturnType(); // 获取API Service方法的返回类型
     }
 
     CallAdapter<ResponseT, ReturnT> callAdapter =
         createCallAdapter(retrofit, method, adapterType, annotations);
+    // 根据CallAdapter获取API Service接口中方法的返回类型
     Type responseType = callAdapter.responseType();
     if (responseType == okhttp3.Response.class) {
       throw methodError(
@@ -80,7 +81,7 @@ abstract class HttpServiceMethod<ResponseT, ReturnT> extends ServiceMethod<Retur
     if (requestFactory.httpMethod.equals("HEAD") && !Void.class.equals(responseType)) {
       throw methodError(method, "HEAD method must use Void as response type.");
     }
-
+    //
     Converter<ResponseBody, ResponseT> responseConverter =
         createResponseConverter(retrofit, method, responseType);
 

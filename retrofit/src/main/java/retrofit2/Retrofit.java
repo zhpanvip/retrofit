@@ -150,14 +150,14 @@ public final class Retrofit {
               @Override
               public @Nullable Object invoke(Object proxy, Method method, @Nullable Object[] args)
                   throws Throwable {
-                // If the method is a method from Object then defer to normal invocation.
+                // 判断方法是Object方法则直接调用
                 if (method.getDeclaringClass() == Object.class) {
                   return method.invoke(this, args);
                 }
                 args = args != null ? args : emptyArgs;
-                return platform.isDefaultMethod(method)
+                return platform.isDefaultMethod(method) // 是否为JDK8中接口的Default方法
                     ? platform.invokeDefaultMethod(method, service, proxy, args)
-                    : loadServiceMethod(method).invoke(args);
+                    : loadServiceMethod(method).invoke(args); // 我们在API Service接口中声明的方法，重点只需要看这里即可。
               }
             });
   }
@@ -191,7 +191,7 @@ public final class Retrofit {
       }
     }
   }
-
+  // 将API Service的方法封装成ServiceMethod
   ServiceMethod<?> loadServiceMethod(Method method) {
     ServiceMethod<?> result = serviceMethodCache.get(method);
     if (result != null) return result;
@@ -238,6 +238,7 @@ public final class Retrofit {
   }
 
   /**
+   * 根据returnType返回对应的CallAdapter,
    * Returns the {@link CallAdapter} for {@code returnType} from the available {@linkplain
    * #callAdapterFactories() factories} except {@code skipPast}.
    *
@@ -250,6 +251,7 @@ public final class Retrofit {
 
     int start = callAdapterFactories.indexOf(skipPast) + 1;
     for (int i = start, count = callAdapterFactories.size(); i < count; i++) {
+      // 根据API Service方法的返回类型查找对应的CallAdapter.
       CallAdapter<?, ?> adapter = callAdapterFactories.get(i).get(returnType, annotations, this);
       if (adapter != null) {
         return adapter;
