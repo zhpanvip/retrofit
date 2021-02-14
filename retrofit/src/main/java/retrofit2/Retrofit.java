@@ -199,6 +199,7 @@ public final class Retrofit {
     synchronized (serviceMethodCache) {
       result = serviceMethodCache.get(method);
       if (result == null) {
+        // 解析接口方法上的注解信息，并将结果封装成ServiceMethod.
         result = ServiceMethod.parseAnnotations(this, method);
         serviceMethodCache.put(method, result);
       }
@@ -233,6 +234,7 @@ public final class Retrofit {
    *
    * @throws IllegalArgumentException if no call adapter available for {@code type}.
    */
+  // TODO zhangpan
   public CallAdapter<?, ?> callAdapter(Type returnType, Annotation[] annotations) {
     return nextCallAdapter(null, returnType, annotations);
   }
@@ -244,6 +246,7 @@ public final class Retrofit {
    *
    * @throws IllegalArgumentException if no call adapter available for {@code type}.
    */
+  // TODO zhangpan
   public CallAdapter<?, ?> nextCallAdapter(
       @Nullable CallAdapter.Factory skipPast, Type returnType, Annotation[] annotations) {
     Objects.requireNonNull(returnType, "returnType == null");
@@ -251,7 +254,7 @@ public final class Retrofit {
 
     int start = callAdapterFactories.indexOf(skipPast) + 1;
     for (int i = start, count = callAdapterFactories.size(); i < count; i++) {
-      // 根据API Service方法的返回类型查找对应的CallAdapter.
+      // 根据接口方法的返回类型查找对应的CallAdapter，比如可能是Call或者Observable，可能是是通过addCallAdapterFactory自定义的CallAdapterFactory
       CallAdapter<?, ?> adapter = callAdapterFactories.get(i).get(returnType, annotations, this);
       if (adapter != null) {
         return adapter;

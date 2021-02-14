@@ -221,7 +221,7 @@ final class RequestFactory {
 
       return new RequestFactory(this);
     }
-    // 解析API Service方法注解上的信息
+    // 将接口方法上的注解信息解析并拼接成Http的请求参数
     private void parseMethodAnnotation(Annotation annotation) {
       if (annotation instanceof DELETE) { // HTTP DELETE
         parseHttpMethodAndPath("DELETE", ((DELETE) annotation).value(), false);

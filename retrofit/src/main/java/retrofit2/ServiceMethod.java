@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 
 abstract class ServiceMethod<T> {
   static <T> ServiceMethod<T> parseAnnotations(Retrofit retrofit, Method method) {
-    // 解析API方法上的注解
+    // 将接口方法上的注解信息解析到RequestFactory中。
     RequestFactory requestFactory = RequestFactory.parseAnnotations(retrofit, method);
 
     Type returnType = method.getGenericReturnType();
